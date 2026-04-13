@@ -1,35 +1,34 @@
 package com.edutech.progressive.service.impl;
 
-import java.sql.SQLException;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.edutech.progressive.entity.Patient;
-import com.edutech.progressive.service.PatientService;
-@Service
-public class PatientServiceImplJpa implements PatientService {
 
-    @Override
-    public List<Patient> getAllPatients() throws SQLException {
+public class PatientServiceImplJpa  {
+
+    public List<Patient> getAllPatients() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getAllPatients'");
     }
 
-    @Override
-    public Integer addPatient(Patient patient) throws SQLException {
+    public Patient getPatientById(int patientId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPatientById'");
+    }
+
+    public Integer addPatient(Patient patient) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addPatient'");
     }
 
-    @Override
-    public List<Patient> getAllPatientSortedByName() throws SQLException {
+    public void updatePatient(Patient patient) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllPatientSortedByName'");
+        throw new UnsupportedOperationException("Unimplemented method 'updatePatient'");
     }
 
-
-
-    
+    public void deletePatient(int patientId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deletePatient'");
+    }
 
 }

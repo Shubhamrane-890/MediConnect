@@ -7,9 +7,13 @@ import java.util.List;
 import com.edutech.progressive.entity.Doctor;
 import com.edutech.progressive.service.DoctorService;
 
-public class DoctorServiceImplArraylist implements DoctorService  {
+public class DoctorServiceImplArraylist implements DoctorService {
 
     private static List<Doctor> doctorList = new ArrayList<>();
+
+    @Override
+    public void emptyArrayList() {
+    }
 
     @Override
     public List<Doctor> getAllDoctors() {
@@ -26,10 +30,6 @@ public class DoctorServiceImplArraylist implements DoctorService  {
     public List<Doctor> getDoctorSortedByExperience() {
         Collections.sort(doctorList);
         return doctorList;
-    }
-
-    public void emptyArrayList(){
-        
     }
 
 }
