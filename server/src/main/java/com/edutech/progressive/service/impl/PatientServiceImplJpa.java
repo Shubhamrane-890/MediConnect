@@ -1,34 +1,67 @@
 package com.edutech.progressive.service.impl;
 
+
+
+
+
+import java.util.Collections;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.edutech.progressive.entity.Patient;
+import com.edutech.progressive.repository.PatientRepository;
+import com.edutech.progressive.service.PatientService;
 
-public class PatientServiceImplJpa  {
+@Service
+public class PatientServiceImplJpa implements PatientService {
 
+    private final PatientRepository patientRepository;
+
+    public PatientServiceImplJpa(PatientRepository patientRepository) {
+        this.patientRepository = patientRepository;
+    }
+
+    @Override
     public List<Patient> getAllPatients() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllPatients'");
+        return patientRepository.findAll();
     }
 
-    public Patient getPatientById(int patientId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPatientById'");
-    }
-
+    @Override
     public Integer addPatient(Patient patient) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addPatient'");
+        Patient saved = patientRepository.save(patient);
+        if (saved == null) {
+            return 0;
+        }
+        return 1;
     }
 
+    @Override
+    public List<Patient> getAllPatientSortedByName() {
+        List<Patient> list = patientRepository.findAll();
+        Collections.sort(list); // assumes Patient implements Comparable
+        return list;
+    }
+
+    @Override
+    public Patient getPatientById(int patientId) {
+        return patientRepository.findByPatientId(patientId);
+    }
+
+    @Override
     public void updatePatient(Patient patient) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updatePatient'");
+        if (patient == null) return;
+        if (patient.getPatientId() == 0) return;
+
+        if (patientRepository.existsById(patient.getPatientId())) {
+            patientRepository.save(patient);
+        }
     }
 
+    @Override
     public void deletePatient(int patientId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deletePatient'");
+        if (patientRepository.existsById(patientId)) {
+            patientRepository.deleteById(patientId);
+        }
     }
-
 }
