@@ -1,14 +1,10 @@
 package com.edutech.progressive.service.impl;
 
-
-
-
-
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import com.edutech.progressive.entity.Doctor;
@@ -18,36 +14,47 @@ import com.edutech.progressive.service.DoctorService;
 @Service
 public class DoctorServiceImplJpa implements DoctorService {
 
-    private DoctorRepository doctorRepository;
-    public DoctorServiceImplJpa(DoctorRepository doctorRepository) {
-        this.doctorRepository = doctorRepository;
-    }
-
-    @Override
-    public List<Doctor> getAllDoctors() {
-        return doctorRepository.findAll();
+    private final DoctorRepository dr;
+    public DoctorServiceImplJpa(DoctorRepository dr){
+        this.dr = dr;
     }
 
 
     @Override
-    public Integer addDoctor(Doctor doctor) {
-        Doctor doc=doctorRepository.save(doctor);
-        return doc.getDoctorId();
+    public List<Doctor> getAllDoctors() throws Exception {
+       return dr.findAll();
     }
 
     @Override
-    public List<Doctor> getDoctorSortedByExperience() {
-        List<Doctor> doc=doctorRepository.findAll();
-        Collections.sort(doc,Comparator.comparing(Doctor::getYearsOfExperience));
-        return doc;
+    public Integer addDoctor(Doctor doctor) throws Exception {
+        dr.save(doctor);
+        return doctor.getDoctorId();
     }
 
-  
-
-    public void deleteDoctor(int doctorId) {
-        doctorRepository.deleteById(doctorId);
+    @Override
+    public List<Doctor> getDoctorSortedByExperience() throws Exception {
+        List<Doctor> list = dr.findAll();
+        Collections.sort(list);
+        return list;
     }
 
-    
+    public void updateDoctor(Doctor doctor) throws Exception{
+        dr.save(doctor);
+    }
+
+    public void deleteDoctor(int doctorId) throws Exception {
+        Optional<Doctor> o = dr.findByDoctorId(doctorId);
+        if(o.isPresent()){
+            dr.deleteById(doctorId);
+        }  
+    }
+
+    public Doctor getDoctorById(int doctorId) throws Exception {
+        Optional<Doctor> o = dr.findByDoctorId(doctorId);
+        if(o.isPresent()){
+            return o.get();
+        }
+        return null;
+    }
 
 }

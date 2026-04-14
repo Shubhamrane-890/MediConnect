@@ -1,79 +1,102 @@
 package com.edutech.progressive.controller;
 
-// File: src/main/java/com/edutech/progressive/controller/PatientController.java
-
-
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import com.edutech.progressive.entity.Patient;
 import com.edutech.progressive.service.PatientService;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 @RestController
 @RequestMapping("/patient")
 public class PatientController {
 
-    private final PatientService patientService;
-
-    public PatientController(PatientService patientService) {
-        this.patientService = patientService;
+    PatientService ps;
+    public PatientController(PatientService ps){
+        this.ps = ps;
     }
 
-    // ✅ GET /patients
     @GetMapping
     public ResponseEntity<List<Patient>> getAllPatients() {
-        return ResponseEntity.ok(patientService.getAllPatients());
+        try {
+            return new ResponseEntity<>(ps.getAllPatients(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    // ✅ GET /patients/sorted
-    @GetMapping("/sorted")
-    public ResponseEntity<List<Patient>> getAllPatientsSortedByName() {
-        return ResponseEntity.ok(patientService.getAllPatientSortedByName());
+    @GetMapping("/{patientID}")
+    public ResponseEntity<Patient> getPatientById(@PathVariable("patientID") int patientId) {
+        try {
+            return new ResponseEntity<>(ps.getPatientById(patientId), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    // ✅ GET /patients/{patientId}
-    @GetMapping("/{patientId}")
-    public ResponseEntity<Patient> getPatientById(@PathVariable int patientId) {
-        return ResponseEntity.ok(patientService.getPatientById(patientId));
-    }
-
-    // ✅ POST /patients
     @PostMapping
     public ResponseEntity<Integer> addPatient(@RequestBody Patient patient) {
-        return ResponseEntity.ok(patientService.addPatient(patient));
+        try {
+            return new ResponseEntity<>(ps.addPatient(patient), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    // ✅ PUT /patients/{patientId}  -> MUST return 200 (not 404)
-    @PutMapping("/{patientId}")
-    public ResponseEntity<Void> updatePatient(@PathVariable int patientId,
-                                              @RequestBody Patient patient) {
-        patient.setPatientId(patientId);
-        patientService.updatePatient(patient);
-        return ResponseEntity.ok().build(); // ✅ ALWAYS 200 for Day-6 tests
+    @PutMapping("/{patientID}")
+    public ResponseEntity<Void> updatePatient(@PathVariable("patientID") int patientId, @RequestBody Patient patient) {
+        try {
+            if(ps.getPatientById(patientId)!=null)
+            ps.updatePatient(patient);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    // ✅ DELETE /patients/{patientId} -> MUST return 204 (not 404)
-    @DeleteMapping("/{patientId}")
-    public ResponseEntity<Void> deletePatient(@PathVariable int patientId) {
-        patientService.deletePatient(patientId);
-        return ResponseEntity.noContent().build(); // ✅ ALWAYS 204 for Day-6 tests
+    @DeleteMapping("/{patientID}")
+    public ResponseEntity<Void> deletePatient(@PathVariable("patientID") int patientId) {
+        try {
+            ps.deletePatient(patientId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    // --- These 3 methods are from earlier days (ArrayList). Keep as safe defaults.
-    @GetMapping("/arraylist")
+    @GetMapping("/fromArrayList")
     public ResponseEntity<List<Patient>> getAllPatientFromArrayList() {
-        return ResponseEntity.ok(patientService.getAllPatients());
+        try {
+            return new ResponseEntity<>(ps.getAllPatients(),HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PostMapping("/arraylist")
+    @PostMapping("/toArrayList")
     public ResponseEntity<Void> addPatientToArrayList() {
-        return ResponseEntity.ok().build();
+        try {
+            ps.addPatient(null);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @GetMapping("/arraylist/sorted")
+    @GetMapping("/fromArrayList/sorted")
     public ResponseEntity<List<Patient>> getAllPatientSortedByNameFromArrayList() {
-        return ResponseEntity.ok(patientService.getAllPatientSortedByName());
+        try {
+            return new ResponseEntity<>(ps.getAllPatientSortedByName(),HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

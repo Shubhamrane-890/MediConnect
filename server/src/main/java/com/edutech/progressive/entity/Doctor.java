@@ -1,33 +1,31 @@
 package com.edutech.progressive.entity;
 
-// File: src/main/java/com/edutech/progressive/entity/Doctor.java
-
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
-@Table(name = "doctor")
 public class Doctor implements Comparable<Doctor> {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private int doctorId;
-
     private String fullName;
     private String specialty;
     private String contactNumber;
     private String email;
     private int yearsOfExperience;
 
+    @ManyToOne
+    @JoinColumn(name = "clinic_id")
+    Clinic clinic;
+
     public Doctor() {
     }
 
-    public Doctor(int doctorId, String fullName, String specialty,
-                  String contactNumber, String email, int yearsOfExperience) {
+    public Doctor(int doctorId, String fullName, String specialty, String contactNumber, String email,
+            int yearsOfExperience) {
         this.doctorId = doctorId;
         this.fullName = fullName;
         this.specialty = specialty;
@@ -36,28 +34,57 @@ public class Doctor implements Comparable<Doctor> {
         this.yearsOfExperience = yearsOfExperience;
     }
 
-    public int getDoctorId() { return doctorId; }
-    public void setDoctorId(int doctorId) { this.doctorId = doctorId; }
+    public int getDoctorId() {
+        return doctorId;
+    }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public void setDoctorId(int doctorId) {
+        this.doctorId = doctorId;
+    }
 
-    public String getSpecialty() { return specialty; }
-    public void setSpecialty(String specialty) { this.specialty = specialty; }
+    public String getFullName() {
+        return fullName;
+    }
 
-    public String getContactNumber() { return contactNumber; }
-    public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber; }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getSpecialty() {
+        return specialty;
+    }
 
-    public int getYearsOfExperience() { return yearsOfExperience; }
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getYearsOfExperience() {
+        return yearsOfExperience;
+    }
+
     public void setYearsOfExperience(int yearsOfExperience) {
         this.yearsOfExperience = yearsOfExperience;
     }
 
     @Override
     public int compareTo(Doctor o) {
-        return Integer.compare(this.yearsOfExperience, o.getYearsOfExperience());
+        return Integer.compare(this.getYearsOfExperience(), o.getYearsOfExperience());
     }
+
 }
