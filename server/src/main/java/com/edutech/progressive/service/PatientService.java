@@ -1,32 +1,23 @@
 package com.edutech.progressive.service;
 
-import com.edutech.progressive.dto.PatientDTO;
-import com.edutech.progressive.entity.Patient;
+// File: src/main/java/com/edutech/progressive/service/PatientService.java
 
-import java.sql.SQLException;
+
 import java.util.List;
+
+import com.edutech.progressive.entity.Patient;
 
 public interface PatientService {
 
-    List<Patient> getAllPatients() throws SQLException;
+    List<Patient> getAllPatients();
 
-    Integer addPatient(Patient patient) throws SQLException;
+    Integer addPatient(Patient patient);
 
-    List<Patient> getAllPatientSortedByName() throws SQLException;
+    List<Patient> getAllPatientSortedByName();
 
-    default void emptyArrayList() throws SQLException{
-    }
+    Patient getPatientById(int patientId);
 
-    //Do not implement these methods in PatientServiceImplArraylist.java class
-    default void updatePatient(Patient patient) throws SQLException{}
+    void updatePatient(Patient patient);
 
-    default void deletePatient(int patientId) throws SQLException{}
-
-    default Patient getPatientById(int patientId) throws SQLException{
-        return null;
-    }
-
-    //Do not implement these methods in PatientServiceImplArraylist.java and PatientServiceImplJdbc.java class
-    //Do not implement this method until day-13
-    default public void modifyPatientDetails(PatientDTO patientDTO) throws SQLException{ }
+    void deletePatient(int patientId);
 }
