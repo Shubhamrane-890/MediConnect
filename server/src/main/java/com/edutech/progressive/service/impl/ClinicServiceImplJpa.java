@@ -3,6 +3,7 @@ package com.edutech.progressive.service.impl;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -20,38 +21,43 @@ public class ClinicServiceImplJpa implements ClinicService {
     }
 
     @Override
-    public List<Clinic> getAllClinics() {
+    public List<Clinic> getAllClinics() throws Exception {
         return clinicRepository.findAll();
     }
 
     @Override
-    public Integer addClinic(Clinic clinic) {
-        Clinic saved = clinicRepository.save(clinic);
-        if (saved == null) {
-            return 0;
+    public Clinic getClinicById(int clinicId) throws Exception {
+        Optional<Clinic> c = clinicRepository.findByClinicId(clinicId);
+        if (c.isPresent()) {
+            return c.get();
         }
-        return 1;
+        return null;
     }
 
     @Override
-    public Clinic getClinicById(int clinicId) {
-        return clinicRepository.findById(clinicId).orElse(null);
+    public Integer addClinic(Clinic clinic) throws Exception {
+        clinicRepository.save(clinic);
+        return clinic.getClinicId();
     }
 
     @Override
-    public void updateClinic(Clinic clinic) {
-        if (clinic == null) return;
-        if (clinic.getClinicId() == 0) return;
-
-        if (clinicRepository.existsById(clinic.getClinicId())) {
-            clinicRepository.save(clinic);
-        }
+    public void updateClinic(Clinic clinic) throws Exception {
+        clinicRepository.save(clinic);
     }
 
     @Override
-    public void deleteClinic(int clinicId) {
-        if (clinicRepository.existsById(clinicId)) {
+    public void deleteClinic(int clinicId) throws Exception {
+        Optional<Clinic> c = clinicRepository.findByClinicId(clinicId);
+        if (c.isPresent()) {
             clinicRepository.deleteById(clinicId);
         }
+    }
+
+    public List<Clinic> getAllClinicByLocation(String location) throws Exception {
+        return clinicRepository.findAllByLocation(location);
+    }
+
+    public List<Clinic> getAllClinicByDoctorId(int doctorId) throws Exception {
+        return clinicRepository.findAllByDoctorId(doctorId);
     }
 }

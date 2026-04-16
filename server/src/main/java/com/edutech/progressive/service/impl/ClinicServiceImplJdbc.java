@@ -9,39 +9,43 @@ import com.edutech.progressive.entity.Clinic;
 import com.edutech.progressive.service.ClinicService;
 
 public class ClinicServiceImplJdbc implements ClinicService {
-
-    ClinicDAO clinicDAO;
+  ClinicDAO clinicDAO;
 
     public ClinicServiceImplJdbc(ClinicDAO clinicDAO) {
         this.clinicDAO = clinicDAO;
     }
 
     @Override
-    public List<Clinic> getAllClinics() throws SQLException {
+    public List<Clinic> getAllClinics() throws Exception {
 
         return clinicDAO.getAllClinics();
+
     }
 
     @Override
-    public Clinic getClinicById(int clinicId) throws SQLException {
+    public Clinic getClinicById(int clinicId) throws Exception {
+
         return clinicDAO.getClinicById(clinicId);
 
     }
 
     @Override
-    public Integer addClinic(Clinic clinic) throws SQLException {
+    public Integer addClinic(Clinic clinic) throws Exception {
+
         return clinicDAO.addClinic(clinic);
+
     }
 
     @Override
-    public void updateClinic(Clinic clinic) throws SQLException {
+    public void updateClinic(Clinic clinic) throws Exception {
 
         clinicDAO.updateClinic(clinic);
 
     }
 
     @Override
-    public void deleteClinic(int clinicId) throws SQLException {
+    public void deleteClinic(int clinicId) throws Exception {
+
         clinicDAO.deleteClinic(clinicId);
 
     }

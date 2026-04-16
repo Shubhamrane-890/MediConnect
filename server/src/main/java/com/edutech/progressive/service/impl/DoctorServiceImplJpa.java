@@ -4,16 +4,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.edutech.progressive.entity.Doctor;
+import com.edutech.progressive.exception.DoctorAlreadyExistsException;
+import com.edutech.progressive.repository.ClinicRepository;
 import com.edutech.progressive.repository.DoctorRepository;
 import com.edutech.progressive.service.DoctorService;
 
 @Service
 public class DoctorServiceImplJpa implements DoctorService {
-
+    @Autowired
+    private ClinicRepository cr;
+    
     private final DoctorRepository dr;
     public DoctorServiceImplJpa(DoctorRepository dr){
         this.dr = dr;
@@ -27,6 +31,10 @@ public class DoctorServiceImplJpa implements DoctorService {
 
     @Override
     public Integer addDoctor(Doctor doctor) throws Exception {
+        Optional<Doctor> d = dr.findByEmail(doctor.getEmail());
+        if(d.isPresent()){
+            throw new DoctorAlreadyExistsException("Doctor already exists with this email");
+        }
         dr.save(doctor);
         return doctor.getDoctorId();
     }
@@ -45,6 +53,7 @@ public class DoctorServiceImplJpa implements DoctorService {
     public void deleteDoctor(int doctorId) throws Exception {
         Optional<Doctor> o = dr.findByDoctorId(doctorId);
         if(o.isPresent()){
+            cr.deleteByDoctorId(doctorId);
             dr.deleteById(doctorId);
         }  
     }

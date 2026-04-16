@@ -13,4 +13,5 @@ import com.edutech.progressive.entity.Patient;
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Integer> {
     Optional<Patient> findByPatientId(int patientId);
+    Optional<Patient> findByEmail(String email);
 }
