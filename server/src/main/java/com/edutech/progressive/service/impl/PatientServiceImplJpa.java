@@ -1,70 +1,81 @@
 package com.edutech.progressive.service.impl;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.edutech.progressive.entity.Patient;
 import com.edutech.progressive.exception.PatientAlreadyExistsException;
 import com.edutech.progressive.exception.PatientNotFoundException;
+import com.edutech.progressive.repository.BillingRepository;
 import com.edutech.progressive.repository.PatientRepository;
 import com.edutech.progressive.service.PatientService;
+
 @Service
-@Primary
 public class PatientServiceImplJpa implements PatientService {
 
-    private final PatientRepository pr;
-    public PatientServiceImplJpa(PatientRepository pr){
-        this.pr = pr;
+    private PatientRepository patientRepository;
+
+    @Autowired
+    private BillingRepository billingRepository;
+
+    @Autowired
+    public PatientServiceImplJpa(PatientRepository patientRepository) {
+        this.patientRepository = patientRepository;
     }
 
     @Override
     public List<Patient> getAllPatients() throws Exception {
-        List<Patient> list = pr.findAll();
-        if(list.isEmpty()){
-            throw new PatientNotFoundException("Patient not found");
-        }
-        return list;
+        return patientRepository.findAll();
     }
 
     @Override
     public Integer addPatient(Patient patient) throws Exception {
-        Optional<Patient> o = pr.findByEmail(patient.getEmail());
-        if(o.isPresent()){
-            throw new PatientAlreadyExistsException("Patient already exists with same email");
+        Patient existingPatient = patientRepository.findByEmail(patient.getEmail());
+        if (existingPatient != null) {
+            throw new PatientAlreadyExistsException("Patient already exists");
         }
-        Patient p = pr.save(patient);
-        return p.getPatientId();
+        return patientRepository.save(patient).getPatientId();
     }
 
     @Override
     public List<Patient> getAllPatientSortedByName() throws Exception {
-        List<Patient> list = pr.findAll();
-        if(list.isEmpty()){
-            throw new PatientNotFoundException("Patient not found");
-        }
-        Collections.sort(list);
-        return list;
+        List<Patient> patientList = patientRepository.findAll();
+        patientList.sort(Comparator.comparing(Patient::getFullName));
+        return patientList;
     }
 
     public void updatePatient(Patient patient) throws Exception {
-        pr.save(patient);
+        Patient existingPatient = patientRepository.findByEmail(patient.getEmail());
+        if (existingPatient != null) {
+            throw new PatientAlreadyExistsException("Patient already exists");
+        }
+        Patient patientObj = patientRepository.findById(patient.getPatientId()).get();
+        if (patientObj != null) {
+            patientObj.setFullName(patient.getFullName());
+            patientObj.setContactNumber(patient.getContactNumber());
+            patientObj.setDateOfBirth(patient.getDateOfBirth());
+            patientObj.setEmail(patient.getEmail());
+            patientObj.setAddress(patient.getEmail());
+
+            patientRepository.save(patientObj);
+        }
     }
 
     public void deletePatient(int patientId) throws Exception {
-        if(pr.findById(patientId).isPresent()){
-            pr.deleteById(patientId);
-        }
+        billingRepository.deleteByPatientId(patientId);
+        patientRepository.deleteById(patientId);
     }
 
     public Patient getPatientById(int patientId) throws Exception {
-        if(pr.findById(patientId).isPresent()){
-            return pr.findByPatientId(patientId).get();
+        if (!patientRepository.existsById(patientId)) {
+            throw new PatientNotFoundException("Patient not found");
         }
-        throw new PatientNotFoundException("Patient not found");
+        return patientRepository.findByPatientId(patientId);
     }
 
 }
