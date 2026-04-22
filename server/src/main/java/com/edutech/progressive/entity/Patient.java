@@ -65,4 +65,9 @@ public class Patient implements Comparable<Patient> {
     public int compareTo(Patient o) {
         return this.fullName.compareTo(o.getFullName());
     }
+
+    public Patient get() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'get'");
+    }
 }

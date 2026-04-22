@@ -1,6 +1,6 @@
 package com.edutech.progressive.controller;
 
-import com.edutech.progressive.entity.Doctor;
+import com.edutech.progressive.dto.DoctorDTO;
 import com.edutech.progressive.service.DoctorService;
 
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class DoctorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Doctor>> getAllDoctors() {
+    public ResponseEntity<List<DoctorDTO>> getAllDoctors() {
         try {
             return new ResponseEntity<>(ds.getAllDoctors(), HttpStatus.OK);
         } catch (Exception e) {
@@ -34,7 +34,7 @@ public class DoctorController {
     }
 
     @GetMapping("/{doctorID}")
-    public ResponseEntity<Doctor> getDoctorById(@PathVariable("doctorID") int doctorId) {
+    public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable("doctorID") int doctorId) {
         try {
             return new ResponseEntity<>(ds.getDoctorById(doctorId), HttpStatus.OK);
         } catch (Exception e) {
@@ -43,19 +43,19 @@ public class DoctorController {
     }
 
     @PostMapping
-    public ResponseEntity<Integer> addDoctor(@RequestBody Doctor doctor) {
+    public ResponseEntity<Integer> addDoctor(@RequestBody DoctorDTO doctorDTO) {
         try {
-            return new ResponseEntity<>(ds.addDoctor(doctor), HttpStatus.CREATED);
+            return new ResponseEntity<>(ds.addDoctor(doctorDTO), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/{doctorID}")
-    public ResponseEntity<Void> updateDoctor(@PathVariable("doctorID") int doctorId,@RequestBody Doctor doctor) {
+    public ResponseEntity<Void> updateDoctor(@PathVariable("doctorID") int doctorId,@RequestBody DoctorDTO doctorDTO) {
         try {
             if(ds.getDoctorById(doctorId)!=null)
-            ds.updateDoctor(doctor);
+            ds.updateDoctor(doctorDTO);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -73,7 +73,7 @@ public class DoctorController {
     }
 
     @GetMapping("/experience")
-    public ResponseEntity<List<Doctor>> getDoctorSortedByExperience() {
+    public ResponseEntity<List<DoctorDTO>> getDoctorSortedByExperience() {
         try {
             return new ResponseEntity<>(ds.getDoctorSortedByExperience(), HttpStatus.OK);
         } catch (Exception e) {
