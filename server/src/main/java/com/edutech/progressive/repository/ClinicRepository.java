@@ -1,4 +1,19 @@
 package com.edutech.progressive.repository;
 
-public interface ClinicRepository {
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.edutech.progressive.entity.Clinic;
+
+@Repository
+public interface ClinicRepository extends JpaRepository<Clinic, Integer> {
+    Optional<Clinic> findByClinicId(int clinicId);
+    List<Clinic> findAllByLocation(String location);
+    List<Clinic> findAllByDoctorId(int doctorId);
+    void deleteByDoctorId(int doctorId);
+    Optional<Clinic> findByClinicName(String clinicName);
 }
+
