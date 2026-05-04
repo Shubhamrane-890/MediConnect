@@ -1,27 +1,30 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router';
 
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
-import { AuthInterceptor } from './auth.interceptors';
+const routes: Routes = [
+  {
+    path: 'auth',
+    loadChildren: () =>
+      import('./auth/auth.module').then(m => m.AuthModule)
+  },
+  {
+    path: 'mediconnect',
+    loadChildren: () =>
+      import('./mediconnect/mediconnect.module').then(m => m.MediconnectModule)
+  },
+  {
+    path: '',
+    redirectTo: 'auth',
+    pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: 'auth'
+  }
+];
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    }
-  ],
-  bootstrap: [AppComponent]
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
-export class AppModule {}
+export class AppRoutingModule {}
