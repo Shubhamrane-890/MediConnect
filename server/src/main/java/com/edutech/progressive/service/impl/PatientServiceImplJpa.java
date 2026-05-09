@@ -5,9 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.edutech.progressive.dto.PatientDTO;
 import com.edutech.progressive.entity.Patient;
@@ -17,6 +20,7 @@ import com.edutech.progressive.repository.BillingRepository;
 import com.edutech.progressive.repository.PatientRepository;
 import com.edutech.progressive.service.PatientService;
 @Service
+@Transactional
 @Primary
 public class PatientServiceImplJpa implements PatientService {
 

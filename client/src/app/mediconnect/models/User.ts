@@ -25,9 +25,9 @@ export class User {
     this.clinic = clinic;
   }
 
-  logAttributes(): void {
-    Object.entries(this).forEach(([key, value]) => {
-      console.log(`${key}:`, value);
-    });
-  }
+  // logAttributes(): void {
+  //   Object.entries(this).forEach(([key, value]) => {
+  //     console.log(`${key}:`, value);
+  //   });
+  // }
 }

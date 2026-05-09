@@ -1,52 +1,84 @@
-<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <!-- Username -->
-  <div class="mb-3">
-    <label for="username" class="form-label">Username</label>
-    <input id="username" type="text" class="form-control" formControlName="username" />
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
 
-    <div
-      class="text-danger"
-      *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid"
-    >
-      <div *ngIf="loginForm.get('username')?.errors?.['required']">
-        Username is required
+  <div class="card shadow p-4" style="width: 360px;">
+    <h3 class="text-center mb-4">Login</h3>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <!-- Username -->
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input
+          id="username"
+          type="text"
+          class="form-control"
+          formControlName="username"
+        />
+
+        <div
+          class="text-danger mt-1"
+          *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.invalid"
+        >
+          <div *ngIf="loginForm.get('username')?.errors?.['required']">
+            Username is required
+          </div>
+          <div *ngIf="loginForm.get('username')?.errors?.['pattern']">
+            Username must contain only letters and numbers
+          </div>
+        </div>
       </div>
 
-      <div *ngIf="loginForm.get('username')?.errors?.['pattern']">
-        Username must contain only letters and numbers
+      <!-- Password -->
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input
+          id="password"
+          type="password"
+          class="form-control"
+          formControlName="password"
+        />
+
+        <div
+          class="text-danger mt-1"
+          *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+        >
+          <div *ngIf="loginForm.get('password')?.errors?.['required']">
+            Password is required
+          </div>
+          <div *ngIf="loginForm.get('password')?.errors?.['minlength']">
+            Password must be at least 8 characters long
+          </div>
+          <div *ngIf="loginForm.get('password')?.errors?.['pattern']">
+            Password must contain one uppercase letter and one number
+          </div>
+        </div>
       </div>
-    </div>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="btn btn-success w-100"
+        [disabled]="loginForm.invalid"
+      >
+        Login
+      </button>
+
+      <!-- Messages -->
+      <div class="text-success mt-2 text-center" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+
+      <div class="text-danger mt-2 text-center" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Signup -->
+      <div class="text-center mt-3">
+        Don’t have an account?
+        <a routerLink="/auth/register">Sign up</a>
+      </div>
+
+    </form>
   </div>
 
-  <!-- Password -->
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input id="password" type="password" class="form-control" formControlName="password" />
-
-    <div
-      class="text-danger"
-      *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
-    >
-      <div *ngIf="loginForm.get('password')?.errors?.['required']">
-        Password is required
-      </div>
-
-      <div *ngIf="loginForm.get('password')?.errors?.['minlength']">
-        Password must be at least 8 characters long
-      </div>
-
-      <div *ngIf="loginForm.get('password')?.errors?.['pattern']">
-        Password must contain one uppercase letter and one number
-      </div>
-    </div>
-  </div>
-
-  <!-- Submit Button -->
-  <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">
-    Login
-  </button>
-
-  <!-- Success & Error Messages -->
-  <div class="text-success mt-2" *ngIf="successMessage">{{ successMessage }}</div>
-  <div class="text-danger mt-2" *ngIf="errorMessage">{{ errorMessage }}</div>
-</form>
+</div>
