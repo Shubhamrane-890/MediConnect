@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -19,13 +17,15 @@ import com.edutech.progressive.exception.PatientNotFoundException;
 import com.edutech.progressive.repository.BillingRepository;
 import com.edutech.progressive.repository.PatientRepository;
 import com.edutech.progressive.service.PatientService;
+
 @Service
 @Transactional
 @Primary
 public class PatientServiceImplJpa implements PatientService {
 
     private final PatientRepository pr;
-    public PatientServiceImplJpa(PatientRepository pr){
+
+    public PatientServiceImplJpa(PatientRepository pr) {
         this.pr = pr;
     }
 
@@ -35,11 +35,11 @@ public class PatientServiceImplJpa implements PatientService {
     @Override
     public List<PatientDTO> getAllPatients() throws Exception {
         List<Patient> list = pr.findAll();
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             throw new PatientNotFoundException("Patient not found");
         }
         List<PatientDTO> patientDTO = new ArrayList<>();
-        for(Patient p : list){
+        for (Patient p : list) {
             patientDTO.add(convertToDto(p));
         }
         return patientDTO;
@@ -49,7 +49,7 @@ public class PatientServiceImplJpa implements PatientService {
     public Integer addPatient(PatientDTO patientDTO) throws Exception {
         Patient patient = convertToEntity(patientDTO);
         Optional<Patient> o = pr.findByEmail(patient.getEmail());
-        if(o.isPresent()){
+        if (o.isPresent()) {
             throw new PatientAlreadyExistsException("Patient already exists with same email");
         }
         Patient p = pr.save(patient);
@@ -59,12 +59,12 @@ public class PatientServiceImplJpa implements PatientService {
     @Override
     public List<PatientDTO> getAllPatientSortedByName() throws Exception {
         List<Patient> list = pr.findAll();
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             throw new PatientNotFoundException("Patient not found");
         }
         Collections.sort(list);
         List<PatientDTO> patientDTO = new ArrayList<>();
-        for(Patient p : list){
+        for (Patient p : list) {
             patientDTO.add(convertToDto(p));
         }
         return patientDTO;
@@ -76,20 +76,20 @@ public class PatientServiceImplJpa implements PatientService {
     }
 
     public void deletePatient(int patientId) throws Exception {
-        if(pr.findById(patientId).isPresent()){
+        if (pr.findById(patientId).isPresent()) {
             br.deleteByPatientId(patientId);
             pr.deleteById(patientId);
         }
     }
 
     public PatientDTO getPatientById(int patientId) throws Exception {
-        if(pr.findById(patientId).isPresent()){
+        if (pr.findById(patientId).isPresent()) {
             return convertToDto(pr.findByPatientId(patientId).get());
         }
         throw new PatientNotFoundException("Patient not found");
     }
 
-    public Patient convertToEntity(PatientDTO dto){
+    public Patient convertToEntity(PatientDTO dto) {
         Patient patient = new Patient();
         patient.setPatientId(dto.getPatientId());
         patient.setFullName(dto.getFullName());
@@ -100,7 +100,7 @@ public class PatientServiceImplJpa implements PatientService {
         return patient;
     }
 
-    public PatientDTO convertToDto(Patient patient){
+    public PatientDTO convertToDto(Patient patient) {
         PatientDTO patientDTO = new PatientDTO();
         patientDTO.setPatientId(patient.getPatientId());
         patientDTO.setFullName(patient.getFullName());

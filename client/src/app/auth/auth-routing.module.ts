@@ -5,7 +5,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegistrationComponent } from './components/registration/registration.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' }, // ✅ REQUIRED
+  { path: '', redirectTo: 'login', pathMatch: 'full' },   // ✅ default
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegistrationComponent }
 ];

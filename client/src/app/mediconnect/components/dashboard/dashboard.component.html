@@ -1,29 +1,24 @@
 <app-navbar></app-navbar>
 
-<!-- DOCTOR DASHBOARD -->
 <div class="container mt-4" *ngIf="role === 'DOCTOR'">
 
   <h2 class="text-center mb-4">Doctor Dashboard</h2>
 
   <!-- Doctor Details -->
   <div class="card mb-4">
-    <div class="card-header">
-      <strong>Doctor Details</strong>
-    </div>
+    <div class="card-header"><strong>Doctor Details</strong></div>
     <div class="card-body">
       <p><strong>Name:</strong> {{ doctorDetails?.fullName }}</p>
       <p><strong>Email:</strong> {{ doctorDetails?.email }}</p>
       <p><strong>Specialty:</strong> {{ doctorDetails?.specialty }}</p>
       <p><strong>Years of Experience:</strong> {{ doctorDetails?.yearsOfExperience }}</p>
-
-      <button class="btn btn-primary me-2" (click)="navigateToEditDoctor()">Edit</button>
-      <button class="btn btn-danger" (click)="deleteDoctor()">Delete</button>
     </div>
   </div>
 
   <!-- Clinics -->
   <div class="card mb-4">
     <div class="card-header">Clinics</div>
+
     <div class="card-body" *ngIf="clinics.length === 0">
       <div class="alert alert-danger text-center">No clinics.</div>
     </div>
@@ -39,19 +34,27 @@
             <th>Actions</th>
           </tr>
         </thead>
+
         <tbody>
           <tr *ngFor="let clinic of clinics" (click)="onClinicSelect(clinic)">
             <td>{{ clinic.clinicId }}</td>
             <td>{{ clinic.clinicName }}</td>
-            <td>{{ clinic.doctor.fullName }}</td>
+
+            <!-- ✅ FIXED: doctor name always from doctorDetails -->
+            <td>{{ doctorDetails?.fullName }}</td>
+
             <td>{{ clinic.location }}</td>
+
             <td>
-              <button class="btn btn-sm btn-primary me-1"
-                      (click)="navigateToEditClinic(clinic.clinicId); $event.stopPropagation()">
+              <button
+                class="btn btn-sm btn-primary me-1"
+                (click)="navigateToEditClinic(clinic.clinicId!); $event.stopPropagation()">
                 Edit
               </button>
-              <button class="btn btn-sm btn-danger"
-                      (click)="deleteClinic(clinic.clinicId); $event.stopPropagation()">
+
+              <button
+                class="btn btn-sm btn-danger"
+                (click)="deleteClinic(clinic.clinicId!); $event.stopPropagation()">
                 Delete
               </button>
             </td>
@@ -63,105 +66,34 @@
 
   <!-- Appointments -->
   <div class="card mb-4">
-    <div class="card-header">Appointments in Selected Clinic</div>
+    <div class="card-header">Appointments</div>
+
     <div class="card-body" *ngIf="appointments.length === 0">
-      <div class="alert alert-danger text-center">No appointments available.</div>
+      <div class="alert alert-warning text-center">
+        Select a clinic to view appointments.
+      </div>
     </div>
 
     <div class="table-responsive" *ngIf="appointments.length > 0">
       <table class="table table-bordered">
         <thead class="table-light">
           <tr>
-            <th>Clinic</th>
             <th>Patient</th>
             <th>Date</th>
             <th>Purpose</th>
             <th>Status</th>
-            <th>Actions</th>
           </tr>
         </thead>
+
         <tbody>
-          <tr *ngFor="let appointment of appointments">
-            <td>{{ appointment.clinic.clinicName }}</td>
-            <td>{{ appointment.patient.fullName }}</td>
-            <td>{{ appointment.appointmentDate | date }}</td>
-            <td>{{ appointment.purpose }}</td>
-            <td>
-              <span class="badge"
-                    [ngClass]="{
-                      'bg-success': appointment.status === 'Accepted',
-                      'bg-danger': appointment.status === 'Cancelled',
-                      'bg-warning text-dark': appointment.status !== 'Accepted' && appointment.status !== 'Cancelled'
-                    }">
-                {{ appointment.status || 'Pending' }}
-              </span>
-            </td>
-            <td>
-              <button class="btn btn-sm btn-success me-1"
-                      (click)="acceptAppointment(appointment)"
-                      [disabled]="appointment.status === 'Accepted'">
-                Accept
-              </button>
-              <button class="btn btn-sm btn-danger"
-                      (click)="cancelAppointment(appointment)"
-                      [disabled]="appointment.status === 'Cancelled'">
-                Cancel
-              </button>
-            </td>
+          <tr *ngFor="let a of appointments">
+            <td>{{ a.patient?.fullName }}</td>
+            <td>{{ a.appointmentDate | date }}</td>
+            <td>{{ a.purpose }}</td>
+            <td>{{ a.status || 'Pending' }}</td>
           </tr>
         </tbody>
       </table>
-    </div>
-  </div>
-
-  <!-- Patients -->
-  <div class="card mb-4">
-    <div class="card-header">Patients</div>
-    <div class="card-body" *ngIf="patients.length === 0">
-      <div class="alert alert-danger text-center">No patients available.</div>
-    </div>
-
-    <div class="table-responsive" *ngIf="patients.length > 0">
-      <table class="table table-bordered">
-        <thead class="table-light">
-          <tr>
-            <th>Patient Id</th>
-            <th>Name</th>
-            <th>Date of Birth</th>
-            <th>Contact Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let patient of patients">
-            <td>{{ patient.patientId }}</td>
-            <td>{{ patient.fullName }}</td>
-            <td>{{ patient.dateOfBirth | date }}</td>
-            <td>{{ patient.contactNumber }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-</div>
-
-<!-- PATIENT DASHBOARD -->
-<div class="container mt-4" *ngIf="role === 'PATIENT'">
-
-  <h2 class="text-center mb-4">Patient Dashboard</h2>
-
-  <div class="card mb-4">
-    <div class="card-header">Patient Details</div>
-    <div class="card-body">
-      <p><strong>ID:</strong> {{ patientDetails?.patientId }}</p>
-      <p><strong>Name:</strong> {{ patientDetails?.fullName }}</p>
-      <p><strong>Email:</strong> {{ patientDetails?.email }}</p>
-      <p><strong>Date of Birth:</strong> {{ patientDetails?.dateOfBirth | date }}</p>
-      <p><strong>Address:</strong> {{ patientDetails?.address }}</p>
-      <p><strong>Contact:</strong> {{ patientDetails?.contactNumber }}</p>
-
-      <button class="btn btn-primary me-2" (click)="navigateToEditPatient()">Edit</button>
-      <button class="btn btn-danger" (click)="deletePatient()">Delete</button>
     </div>
   </div>
 

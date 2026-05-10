@@ -8,145 +8,93 @@
       <!-- Username -->
       <div class="mb-3">
         <label class="form-label">Username</label>
-        <input
-          type="text"
-          class="form-control"
-          formControlName="username"
-          [class.is-invalid]="registrationForm.get('username')?.touched && registrationForm.get('username')?.invalid"
-        />
-
-        <div class="text-danger" *ngIf="registrationForm.get('username')?.touched && registrationForm.get('username')?.invalid">
-          <div *ngIf="registrationForm.get('username')?.errors?.['required']">Username is required</div>
-          <div *ngIf="registrationForm.get('username')?.errors?.['pattern']">
-            Username must contain only letters and numbers
-          </div>
-        </div>
+        <input type="text" class="form-control" formControlName="username">
       </div>
 
       <!-- Password -->
       <div class="mb-3">
         <label class="form-label">Password</label>
-        <input
-          type="password"
-          class="form-control"
-          formControlName="password"
-          [class.is-invalid]="registrationForm.get('password')?.touched && registrationForm.get('password')?.invalid"
-        />
-
-        <div class="text-danger" *ngIf="registrationForm.get('password')?.touched && registrationForm.get('password')?.invalid">
-          <div *ngIf="registrationForm.get('password')?.errors?.['required']">Password is required</div>
-          <div *ngIf="registrationForm.get('password')?.errors?.['pattern']">
-            Password must contain at least 8 characters, one uppercase letter and one number
-          </div>
-        </div>
+        <input type="password" class="form-control" formControlName="password">
       </div>
 
       <!-- Role -->
       <div class="mb-3">
         <label class="form-label">Role</label>
-        <select
-          class="form-select"
-          formControlName="role"
-          (change)="onRoleChange($event)"
-          [class.is-invalid]="registrationForm.get('role')?.touched && registrationForm.get('role')?.invalid"
-        >
+        <select class="form-select" formControlName="role" (change)="onRoleChange($event)">
           <option value="">Select Role</option>
           <option value="DOCTOR">DOCTOR</option>
           <option value="PATIENT">PATIENT</option>
         </select>
-
-        <div class="text-danger" *ngIf="registrationForm.get('role')?.touched && registrationForm.get('role')?.invalid">
-          Role is required
-        </div>
       </div>
 
       <!-- Full Name -->
       <div class="mb-3">
         <label class="form-label">Full Name</label>
-        <input
-          type="text"
-          class="form-control"
-          formControlName="fullName"
-          [class.is-invalid]="registrationForm.get('fullName')?.touched && registrationForm.get('fullName')?.invalid"
-        />
-
-        <div class="text-danger" *ngIf="registrationForm.get('fullName')?.touched && registrationForm.get('fullName')?.invalid">
-          Full name is required
-        </div>
+        <input type="text" class="form-control" formControlName="fullName">
       </div>
 
-      <!-- Contact Number -->
+      <!-- Contact -->
       <div class="mb-3">
         <label class="form-label">Contact Number</label>
-        <input
-          type="text"
-          class="form-control"
-          formControlName="contactNumber"
-          [class.is-invalid]="registrationForm.get('contactNumber')?.touched && registrationForm.get('contactNumber')?.invalid"
-        />
-
-        <div class="text-danger" *ngIf="registrationForm.get('contactNumber')?.touched && registrationForm.get('contactNumber')?.invalid">
-          Contact number is required
-        </div>
+        <input type="text" class="form-control" formControlName="contactNumber">
       </div>
 
       <!-- Email -->
       <div class="mb-3">
         <label class="form-label">Email</label>
-        <input
-          type="email"
-          class="form-control"
-          formControlName="email"
-          [class.is-invalid]="registrationForm.get('email')?.touched && registrationForm.get('email')?.invalid"
-        />
-
-        <div class="text-danger" *ngIf="registrationForm.get('email')?.touched && registrationForm.get('email')?.invalid">
-          <div *ngIf="registrationForm.get('email')?.errors?.['required']">Email is required</div>
-          <div *ngIf="registrationForm.get('email')?.errors?.['email']">Invalid email</div>
-        </div>
+        <input type="email" class="form-control" formControlName="email">
       </div>
 
-      <!-- DOCTOR fields -->
+      <!-- Doctor -->
       <div *ngIf="selectedRole === 'DOCTOR'">
         <div class="mb-3">
           <label class="form-label">Specialty</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" formControlName="specialty">
         </div>
 
         <div class="mb-3">
           <label class="form-label">Years of Experience</label>
-          <input type="number" class="form-control" />
+          <input type="number" class="form-control" formControlName="yearsOfExperience">
         </div>
       </div>
 
-      <!-- PATIENT fields -->
+      <!-- Patient -->
       <div *ngIf="selectedRole === 'PATIENT'">
         <div class="mb-3">
           <label class="form-label">Date of Birth</label>
-          <input type="date" class="form-control" />
+          <input type="date" class="form-control" formControlName="dateOfBirth">
         </div>
 
         <div class="mb-3">
           <label class="form-label">Address</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" formControlName="address">
         </div>
       </div>
 
       <!-- Buttons -->
       <div class="d-flex gap-2 mt-3">
-        <button class="btn btn-primary" type="submit" [disabled]="registrationForm.invalid">
-          Register
-        </button>
-
-        <button class="btn btn-secondary" type="button" (click)="resetForm()">
-          Reset
-        </button>
+        <button class="btn btn-primary" type="submit">Register</button>
+        <button class="btn btn-secondary" type="button" (click)="resetForm()">Reset</button>
       </div>
 
-      <!-- Messages -->
-      <div class="text-success mt-3" *ngIf="successMessage">{{ successMessage }}</div>
-      <div class="text-danger mt-3" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="text-danger mt-3" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
 
     </form>
+  </div>
+</div>
+
+<!-- ✅ SUCCESS POPUP -->
+<div class="popup-overlay" *ngIf="showSuccessPopup">
+  <div class="popup-box">
+    <div class="check-icon">✔</div>
+    <h4>Registration Successful</h4>
+    <p>Your account has been created successfully.</p>
+
+    <div class="popup-actions">
+      <button class="btn btn-primary" (click)="goToLogin()">Go to Login</button>
+      <button class="btn btn-outline-secondary" (click)="closePopup()">Close</button>
+    </div>
   </div>
 </div>

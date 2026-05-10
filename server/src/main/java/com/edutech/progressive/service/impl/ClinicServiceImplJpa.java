@@ -3,6 +3,7 @@ package com.edutech.progressive.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import com.edutech.progressive.entity.Clinic;
@@ -11,6 +12,7 @@ import com.edutech.progressive.repository.ClinicRepository;
 import com.edutech.progressive.service.ClinicService;
 
 @Service
+@Primary
 public class ClinicServiceImplJpa implements ClinicService {
 
     private final ClinicRepository clinicRepository;

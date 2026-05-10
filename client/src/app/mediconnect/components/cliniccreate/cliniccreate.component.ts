@@ -1,20 +1,27 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Clinic } from '../../models/Clinic';
-import { Doctor } from '../../models/Doctor';
 import { MediConnectService } from '../../services/mediconnect.service';
+import { Clinic } from '../../models/Clinic';
 
 @Component({
-    selector: 'app-cliniccreate',
-    templateUrl: './cliniccreate.component.html',
-    styleUrls: ['./cliniccreate.component.scss']
+  selector: 'app-cliniccreate',
+  templateUrl: './cliniccreate.component.html',
+  styleUrls: ['./cliniccreate.component.scss']
 })
 export class ClinicCreateComponent implements OnInit {
+
   clinicForm!: FormGroup;
-  successMessage: string | null = null;
+
+  doctorId!: number;
+  doctorName = '';
+
+  // ✅ used in template
+  currentYear = new Date().getFullYear();
+
+  // ✅ popup + messages
+  showSuccessPopup = false;
   errorMessage: string | null = null;
-  doctor!: Doctor;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -22,11 +29,10 @@ export class ClinicCreateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const doctorId = Number(localStorage.getItem("doctor_id"));
+    this.doctorId = Number(localStorage.getItem('doctor_id'));
 
     this.clinicForm = this.formBuilder.group({
-      doctor: [{ value: '', disabled: true }],
-      clinicId: [null],
+      doctorName: [{ value: '', disabled: true }],
       clinicName: ['', [Validators.required, Validators.minLength(2)]],
       location: ['', Validators.required],
       contactNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]],
@@ -35,20 +41,21 @@ export class ClinicCreateComponent implements OnInit {
         [
           Validators.required,
           Validators.min(1900),
-          Validators.max(new Date().getFullYear())
+          Validators.max(this.currentYear)
         ]
-      ],
+      ]
     });
 
-    this.mediconnectService.getDoctorById(doctorId).subscribe({
-      next: (response) => {
-        this.doctor = response;
-        this.clinicForm.patchValue({ doctor: this.doctor.fullName });
-      }
-    });
+    if (this.doctorId) {
+      this.mediconnectService.getDoctorById(this.doctorId).subscribe({
+        next: (doc) => {
+          this.doctorName = doc.fullName;
+          this.clinicForm.patchValue({ doctorName: this.doctorName });
+        }
+      });
+    }
   }
 
-  // ✅ GETTERS
   get clinicName() { return this.clinicForm.get('clinicName'); }
   get location() { return this.clinicForm.get('location'); }
   get contactNumber() { return this.clinicForm.get('contactNumber'); }
@@ -56,32 +63,41 @@ export class ClinicCreateComponent implements OnInit {
 
   resetForm(): void {
     this.clinicForm.reset();
-    this.successMessage = null;
+    this.clinicForm.patchValue({ doctorName: this.doctorName });
     this.errorMessage = null;
   }
 
   onSubmit(): void {
-    if (this.clinicForm.valid) {
-      const clinic: Clinic = {
-        ...this.clinicForm.getRawValue(),
-        doctor: this.doctor,
-      };
-
-      this.mediconnectService.addClinic(clinic).subscribe({
-        next: () => {
-          this.successMessage = 'Clinic created successfully!';
-          this.errorMessage = null;
-          this.clinicForm.reset();
-        },
-        error: (error) => this.handleError(error)
-      });
+    if (this.clinicForm.invalid) {
+      this.clinicForm.markAllAsTouched();
+      return;
     }
+
+    // ✅ Partial<Clinic> payload
+    const payload: Partial<Clinic> = {
+      clinicName: this.clinicForm.value.clinicName,
+      location: this.clinicForm.value.location,
+      contactNumber: this.clinicForm.value.contactNumber,
+      establishedYear: this.clinicForm.value.establishedYear,
+      doctorId: this.doctorId
+    };
+
+    this.mediconnectService.addClinic(payload).subscribe({
+      next: () => {
+        this.showSuccessPopup = true;
+        this.errorMessage = null;
+        this.resetForm();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.errorMessage =
+          error.status === 400
+            ? 'Bad request. Please check your input.'
+            : `Server error: ${error.status}`;
+      }
+    });
   }
 
-  private handleError(error: HttpErrorResponse): void {
-    this.errorMessage = error.status === 400
-      ? 'Bad request. Please check your input.'
-      : `Server-side error: ${error.status}`;
-    this.successMessage = null;
+  closePopup(): void {
+    this.showSuccessPopup = false;
   }
 }
